@@ -45,6 +45,9 @@ serie(Serie):-
 
 persona(Persona):-
   mira(Persona,_).
+  
+persona(Persona):-
+  quiereVer(Persona,_).
 
 esSpoiler(Serie,Spoiler):-
   serie(Serie),
