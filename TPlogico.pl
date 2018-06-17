@@ -61,13 +61,17 @@ leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
   leDijo(Persona,OtraPersona,Serie,_).
 
 leSpoileo(Persona,OtraPersona,Serie):-
+  relacion(Persona,OtraPersona,Serie),
+  leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
+  
+leSpoileo(Persona,OtraPersona,Serie):-
+  relacion(Persona,OtraPersona,Serie),
+  leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).
+  
+relacion(Persona,OtraPersona,Serie):-  
   persona(Persona),
   persona(OtraPersona),
-  serie(Serie),
-  leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
-  /*leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).  SI DEJO ESTE NO FUNCIONA BIEN, REVISAR */
-
-  /* Si, se aceptan sugerencias para mejores nombres*/
+  serie(Serie).
 
 noLeSpoileo(Persona,OtraPersona,Serie):-
   not(leSpoileo(Persona,OtraPersona,Serie)).
