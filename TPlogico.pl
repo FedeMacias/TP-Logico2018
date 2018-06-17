@@ -74,8 +74,10 @@ relacion(Persona,OtraPersona,Serie):-
   serie(Serie).
 
 noLeSpoileo(Persona,OtraPersona,Serie):-
+  relacion(Persona,OtraPersona,_),
+  Persona\= OtraPersona,
   not(leSpoileo(Persona,OtraPersona,Serie)).
 
-/*televidenteResponsable(Persona):-
+televidenteResponsable(Persona):-
   persona(Persona),
-  forAll(OtraPersona,(Persona\= OtraPersona, noLeSpoileo(Persona,OtraPersona,_))).   ME CHILLA POR EL FORALL, REVISAR*/
+  forall(persona(Persona),noLeSpoileo(Persona,OtraPersona,_)).
