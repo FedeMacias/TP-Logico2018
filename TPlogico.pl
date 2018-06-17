@@ -39,3 +39,36 @@ leDijo(nico, juan, got, muerte(tyrion)).
 leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
+
+serie(Serie):-
+  mira(_,Serie).
+
+persona(Persona):-
+  mira(Persona,_).
+
+esSpoiler(Serie,Spoiler):-
+  serie(Serie),
+  paso(Serie,_,_,Spoiler).
+
+leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie):-
+  leDijo(Persona,OtraPersona,Serie,_).
+
+leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
+  quiereVer(OtraPersona,Serie),
+  leDijo(Persona,OtraPersona,Serie,_).
+
+leSpoileo(Persona,OtraPersona,Serie):-
+  persona(Persona),
+  persona(OtraPersona),
+  serie(Serie),
+  leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
+  /*leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).  SI DEJO ESTE NO FUNCIONA BIEN, REVISAR */
+
+  /* Si, se aceptan sugerencias para mejores nombres*/
+
+noLeSpoileo(Persona,OtraPersona,Serie):-
+  not(leSpoileo(Persona,OtraPersona,Serie)).
+
+/*televidenteResponsable(Persona):-
+  persona(Persona),
+  forAll(OtraPersona,(Persona\= OtraPersona, noLeSpoileo(Persona,OtraPersona,_))).   ME CHILLA POR EL FORALL, REVISAR*/
