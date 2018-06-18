@@ -81,7 +81,8 @@ noLeSpoileo(Persona,OtraPersona,Serie):-
 televidenteResponsable(Persona):-
   persona(Persona),
   forall(persona(Persona),noLeSpoileo(Persona,OtraPersona,_)).
-  sucesoFuerte(muerte(_)).
+  
+sucesoFuerte(muerte(_)).
 
 sucesoFuerte(relacion(amorosa,_,_)).
 
