@@ -45,7 +45,7 @@ serie(Serie):-
 
 persona(Persona):-
   mira(Persona,_).
-  
+
 persona(Persona):-
   quiereVer(Persona,_).
 
@@ -63,12 +63,12 @@ leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
 leSpoileo(Persona,OtraPersona,Serie):-
   relacion(Persona,OtraPersona,Serie),
   leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
-  
+
 leSpoileo(Persona,OtraPersona,Serie):-
   relacion(Persona,OtraPersona,Serie),
   leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).
-  
-relacion(Persona,OtraPersona,Serie):-  
+
+relacion(Persona,OtraPersona,Serie):-
   persona(Persona),
   persona(OtraPersona),
   serie(Serie).
@@ -81,7 +81,7 @@ noLeSpoileo(Persona,OtraPersona,Serie):-
 televidenteResponsable(Persona):-
   persona(Persona),
   forall(persona(Persona),noLeSpoileo(Persona,OtraPersona,_)).
-  
+
 sucesoFuerte(muerte(_)).
 
 sucesoFuerte(relacion(amorosa,_,_)).
@@ -94,18 +94,27 @@ esPopularOFuerte(Serie):-
 esPopularOFuerte(Serie):-
   paso(Serie,_,_,Suceso),
   forall(paso(Serie,Temporada,_,Suceso),sucesoFuerte(Suceso)).
-  
+
 miraOQuiereVer(Persona,Serie):-
   quiereVer(Persona,Serie).
 
 miraOQuiereVer(Persona,Serie):-
   mira(Persona,Serie).
-  
+
 alguienLeSpoileo(Persona,Serie):-
   leDijo(_, Persona, Serie,_).
-  
+
 vieneZafando(Persona,Serie):-
   persona(Persona),
   esPopularOFuerte(Serie),
   miraOQuiereVer(Persona,Serie),
   not(alguienLeSpoileo(Persona,Serie)).
+
+%pruebas
+
+begin_tests(esSpoiler).
+
+test(muerte_emperor_es_spoiler) :-
+  esSpoiler(starWars,muerte(emperor)).
+
+end_tests(esSpoiler).
