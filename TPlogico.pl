@@ -81,3 +81,30 @@ noLeSpoileo(Persona,OtraPersona,Serie):-
 televidenteResponsable(Persona):-
   persona(Persona),
   forall(persona(Persona),noLeSpoileo(Persona,OtraPersona,_)).
+  sucesoFuerte(muerte(_)).
+
+sucesoFuerte(relacion(amorosa,_,_)).
+
+sucesoFuerte(relacion(parentesco,_,_)).
+
+esPopularOFuerte(Serie):-
+  esPopular(Serie).
+
+esPopularOFuerte(Serie):-
+  paso(Serie,_,_,Suceso),
+  forall(paso(Serie,Temporada,_,Suceso),sucesoFuerte(Suceso)).
+  
+miraOQuiereVer(Persona,Serie):-
+  quiereVer(Persona,Serie).
+
+miraOQuiereVer(Persona,Serie):-
+  mira(Persona,Serie).
+  
+alguienLeSpoileo(Persona,Serie):-
+  leDijo(_, Persona, Serie,_).
+  
+vieneZafando(Persona,Serie):-
+  persona(Persona),
+  esPopularOFuerte(Serie),
+  miraOQuiereVer(Persona,Serie),
+  not(alguienLeSpoileo(Persona,Serie)).
