@@ -21,6 +21,7 @@ capitulosDeTemporada(got,12,3).
 capitulosDeTemporada(got,10,2).
 capitulosDeTemporada(himym,23,1).
 capitulosDeTemporada(drHouse,16,8).
+
 /*no se agrega mad men ya que por el principio de universo cerrado al no estar en la base de conocimientos se asume falso*/
 
 %paso(Serie, Temporada, Episodio, Lo que paso)
@@ -52,13 +53,18 @@ persona(Persona):-
 esSpoiler(Serie,Spoiler):-
   serie(Serie),
   paso(Serie,_,_,Spoiler).
+  
+noEsSpoiler(Serie,Spoiler):- not(esSpoiler(Serie,Spoiler)).
 
 leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie):-
-  leDijo(Persona,OtraPersona,Serie,_).
+  mira(OtraPersona, Serie),
+  leDijo(Persona,OtraPersona,Serie,Spoiler),
+  esSpoiler(Serie,Spoiler).
 
 leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
   quiereVer(OtraPersona,Serie),
-  leDijo(Persona,OtraPersona,Serie,_).
+  leDijo(Persona,OtraPersona,Serie,Spoiler),
+  esSpoiler(Serie,Spoiler).
 
 leSpoileo(Persona,OtraPersona,Serie):-
   relacion(Persona,OtraPersona,Serie),
@@ -73,14 +79,11 @@ relacion(Persona,OtraPersona,Serie):-
   persona(OtraPersona),
   serie(Serie).
 
-noLeSpoileo(Persona,OtraPersona,Serie):-
-  relacion(Persona,OtraPersona,_),
-  Persona\= OtraPersona,
-  not(leSpoileo(Persona,OtraPersona,Serie)).
-
 televidenteResponsable(Persona):-
+  serie(Serie),
   persona(Persona),
-  forall(persona(Persona),noLeSpoileo(Persona,OtraPersona,_)).
+  forall(persona(OtraPersona),(Persona \= OtraPersona,
+not(leSpoileo(Persona, OtraPersona, Serie)))).
 
 sucesoFuerte(muerte(_)).
 
@@ -93,7 +96,7 @@ esPopularOFuerte(Serie):-
 
 esPopularOFuerte(Serie):-
   paso(Serie,_,_,Suceso),
-  forall(paso(Serie,Temporada,_,Suceso),sucesoFuerte(Suceso)).
+  forall(paso(Serie,_,_,Suceso),sucesoFuerte(Suceso)).
 
 miraOQuiereVer(Persona,Serie):-
   quiereVer(Persona,Serie).
@@ -111,10 +114,35 @@ vieneZafando(Persona,Serie):-
   not(alguienLeSpoileo(Persona,Serie)).
 
 %pruebas
+:- begin_tests(temporadas_series).
+test(got_temporada_3_tiene_12_capitulos, nondet):-
+  capitulosDeTemporada(Serie, Capitulos, Temporada),
+  Serie == got, Capitulos == 12, Temporada == 3.
+test(got_temporada_2_tiene_10_capitulos, nondet):-
+  capitulosDeTemporada(Serie, Capitulos, Temporada),
+  Serie == got, Capitulos == 10, Temporada == 2.
+test(himym_temporada_1_tiene_23_capitulos, nondet):-
+  capitulosDeTemporada(Serie, Capitulos, Temporada),
+  Serie == himym, Capitulos == 23, Temporada == 1.
+test(drHouse_temporada_8_tiene_16_capitulos, nondet):-
+  capitulosDeTemporada(Serie, Capitulos, Temporada),
+  Serie == drHouse, Capitulos == 16, Temporada == 8.
+:- end_tests(temporadas_series).
 
-begin_tests(esSpoiler).
-
-test(muerte_emperor_es_spoiler) :-
+:- begin_tests(esSpoiler).
+test(muerte_emperor_es_spoiler, nondet):-
   esSpoiler(starWars,muerte(emperor)).
+test(muerte_de_pedro_no_es_spoiler, nondet):-
+  noEsSpoiler(starWars,muerte(pedro)).
+test(parentesco_anakin_y_rey_es_spoiler, nondet):-
+  esSpoiler(starWars,relacion(parentesco, anakin, rey)).
+test(parentesco_anakin_y_lavezzi_no_es_spoiler, nondet):-
+  noEsSpoiler(starWars, relacion(parentesco, anakin, lavezzi)).
+:- end_tests(esSpoiler).
 
-end_tests(esSpoiler).
+:- begin_tests(nose).
+test(muerte_emperor_es_spoiler, nondet):-
+  esSpoiler(starWars,muerte(emperor)).
+test(muerte_de_pedro_no_es_spoiler, nondet):-
+  noEsSpoiler(starWars,muerte(pedro)).
+:- end_tests(nose).
