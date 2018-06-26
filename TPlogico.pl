@@ -53,7 +53,7 @@ persona(Persona):-
 esSpoiler(Serie,Spoiler):-
   serie(Serie),
   paso(Serie,_,_,Spoiler).
-  
+
 noEsSpoiler(Serie,Spoiler):- not(esSpoiler(Serie,Spoiler)).
 
 leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie):-
@@ -66,13 +66,17 @@ leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
   leDijo(Persona,OtraPersona,Serie,Spoiler),
   esSpoiler(Serie,Spoiler).
 
-leSpoileo(Persona,OtraPersona,Serie):-
-  relacion(Persona,OtraPersona,Serie),
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
   leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
+
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
+  leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).
+
 
 leSpoileo(Persona,OtraPersona,Serie):-
   relacion(Persona,OtraPersona,Serie),
-  leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).
+  leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie).
+
 
 relacion(Persona,OtraPersona,Serie):-
   persona(Persona),
