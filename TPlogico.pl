@@ -7,11 +7,34 @@ mira(maiu,onePiece).
 mira(maiu,got).
 mira(nico,got).
 mira(gaston,hoc).
+mira(pedro,got).
 /*no se agrega mad men ni a alf ya que por el principio de universo cerrado al no estar en la base de conocimientos se asumen falsas*/
 
-esPopular(got).
 esPopular(hoc).
-esPopular(starWars).
+esPopular(Serie):-
+  serie(Serie),
+  popularidad(Serie,Coeficiente),
+  popularidad(starWars,CoeficienteDeStarWars),
+  Coeficiente >= CoeficienteDeStarWars.
+
+/*Se aceptan cambios de nombre de variables*/
+popularidad(Serie,Coeficiente):-
+  serie(Serie),
+  cantidadPersonasQueMiran(Serie,PersonasQueMiran),
+  cantidadDeConversacionesSobre(Serie,ConversacionesTotales),
+  Coeficiente is PersonasQueMiran * ConversacionesTotales.
+
+cantidadPersonasQueMiran(Serie,PersonasQueMiran):-
+  serie(Serie),
+  findall(Persona,mira(Persona,Serie),TodasLasQueMiran),
+  length(TodasLasQueMiran,CantidadDePersonasQueMiran),
+  PersonasQueMiran is CantidadDePersonasQueMiran.
+
+cantidadDeConversacionesSobre(Serie,ConversacionesTotales):-
+  serie(Serie),
+  findall(Conversacion,leDijo(_,_,Serie,Conversacion),ConversacionesSobreSerie),
+  length(ConversacionesSobreSerie,CantidadDeConversacionesSobreSerie),
+  ConversacionesTotales is CantidadDeConversacionesSobreSerie.
 
 quiereVer(juan,hoc).
 quiereVer(aye,got).
@@ -21,6 +44,11 @@ capitulosDeTemporada(got,12,3).
 capitulosDeTemporada(got,10,2).
 capitulosDeTemporada(himym,23,1).
 capitulosDeTemporada(drHouse,16,8).
+
+amigo(nico, maiu).
+amigo(maiu, gaston).
+amigo(maiu, juan).
+amigo(juan, aye).
 
 /*no se agrega mad men ya que por el principio de universo cerrado al no estar en la base de conocimientos se asume falso*/
 
@@ -40,6 +68,9 @@ leDijo(nico, juan, got, muerte(tyrion)).
 leDijo(aye, juan, got, relacion(amistad, tyrion, john)).
 leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
+leDijo(nico, juan, futurama, muerte(seymourDiera)).
+leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
+leDijo(aye, nico, got, relacion(parentesco, tyrion, dragon)).
 
 serie(Serie):-
   mira(_,Serie).
@@ -116,6 +147,32 @@ vieneZafando(Persona,Serie):-
   esPopularOFuerte(Serie),
   miraOQuiereVer(Persona,Serie),
   not(alguienLeSpoileo(Persona,Serie)).
+
+habloCon(Persona, OtraPersona):-
+  Persona \= OtraPersona,
+  leDijo(Persona, OtraPersona, _ ,_).
+
+malaGente(Persona):-
+  persona(Persona),
+  forall(persona(OtraPersona),(habloCon(Persona,OtraPersona),leSpoileo(Persona,OtraPersona,_))).
+
+malaGente(Persona):-
+  not(mira(Persona,Serie)),
+  Persona \= OtraPersona,
+  leSpoileo(Persona,OtraPersona,Serie).
+
+fullSpoil(Persona,OtraPersona):-
+  persona(Persona),
+  persona(OtraPersona),
+  Persona \= OtraPersona,
+  amigo(OtraPersona,UnTercero),
+  fullSpoil(Persona,UnTercero).
+
+fullSpoil(Persona,OtraPersona):-
+  persona(Persona),
+  persona(OtraPersona),
+  Persona \= OtraPersona,
+  leSpoileo(Persona,OtraPersona,_).
 
 %pruebas
 :- begin_tests(temporadas_series).
