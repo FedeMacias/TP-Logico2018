@@ -87,38 +87,29 @@ esSpoiler(Serie,Spoiler):-
 
 noEsSpoiler(Serie,Spoiler):- not(esSpoiler(Serie,Spoiler)).
 
-leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie):-
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
   mira(OtraPersona, Serie),
   leDijo(Persona,OtraPersona,Serie,Spoiler),
   esSpoiler(Serie,Spoiler).
 
-leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie):-
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
   quiereVer(OtraPersona,Serie),
   leDijo(Persona,OtraPersona,Serie,Spoiler),
   esSpoiler(Serie,Spoiler).
 
-leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
-  leDijoUnSpoilerDeUnaSerieQueVe(Persona,OtraPersona,Serie).
-
-leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
-  leDijoUnSpoilerDeUnaQueQuiereVer(Persona,OtraPersona,Serie).
-
+relacion(Persona,OtraPersona,Serie):-
+  persona(Persona),
+  persona(OtraPersona),
+  Persona \= OtraPersona,
+  serie(Serie).
 
 leSpoileo(Persona,OtraPersona,Serie):-
   relacion(Persona,OtraPersona,Serie),
   leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie).
 
-
-relacion(Persona,OtraPersona,Serie):-
-  persona(Persona),
-  persona(OtraPersona),
-  serie(Serie).
-
 televidenteResponsable(Persona):-
-  serie(Serie),
   persona(Persona),
-  forall(persona(OtraPersona),(Persona \= OtraPersona,
-not(leSpoileo(Persona, OtraPersona, Serie)))).
+  not(leSpoileo(Persona, _, _)).
 
 sucesoFuerte(muerte(_)).
 
