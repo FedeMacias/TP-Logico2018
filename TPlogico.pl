@@ -164,6 +164,14 @@ fullSpoil(Persona,OtraPersona):-
   persona(OtraPersona),
   Persona \= OtraPersona,
   leSpoileo(Persona,OtraPersona,_).
+  
+ %plotTwist(Serie, Temporada, Episodio, listaPalabrasClave)
+plotTwist(got, 3, 2, [suenio, sinPiernas]).
+plotTwist(got, 3, 12, [fuego, boda]).
+plotTwist(superCampeones, 9, 9,[suenio, coma, sinPiernas]).
+plotTwist(drHouse, 8, 7,[coma, pastillas]).
+
+
 
 %pruebas
 :- begin_tests(temporadas_series).
