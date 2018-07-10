@@ -171,6 +171,10 @@ plotTwist(got, 3, 12, [fuego, boda]).
 plotTwist(superCampeones, 9, 9,[suenio, coma, sinPiernas]).
 plotTwist(drHouse, 8, 7,[coma, pastillas]).
 
+plotTwistFuerte(PlotTwist):-
+	noEsCliche(PlotTwist),
+	pasoEnFinalDeTemporada(PlotTwist).
+
 pasoEnFinalDeTemporada(plotTwist(Serie,Temporada,Episodio,_)):-
 	capitulosDeTemporada(Serie, Episodio, Temporada).
 
