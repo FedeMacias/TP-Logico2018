@@ -163,21 +163,21 @@ fullSpoil(Persona,OtraPersona):-
   Persona \= OtraPersona,
   leSpoileo(Persona,OtraPersona,_).
   
- %plotTwist(Serie, Temporada, Episodio, listaPalabrasClave)
+%plotTwist(Serie, Temporada, Episodio, listaPalabrasClave)
 plotTwist(got, 3, 2, [suenio, sinPiernas]).
 plotTwist(got, 3, 12, [fuego, boda]).
 plotTwist(superCampeones, 9, 9,[suenio, coma, sinPiernas]).
 plotTwist(drHouse, 8, 7,[coma, pastillas]).
 
-plotTwistFuerte(PlotTwist):-
-	noEsCliche(PlotTwist),
-	pasoEnFinalDeTemporada(PlotTwist).
+plotTwistFuerteParaSerie(Serie,plotTwist(Serie,Temporada,Episodio,Palabras)):-
+	plotTwist(Serie,Temporada,Episodio,Palabras),
+	not(esCliche(Serie,Palabras)),
+	pasoEnFinalDeTemporada(Serie,Temporada,Episodio).
 
-pasoEnFinalDeTemporada(plotTwist(Serie,Temporada,Episodio,_)):-
+pasoEnFinalDeTemporada(Serie,Temporada,Episodio):-
 	capitulosDeTemporada(Serie, Episodio, Temporada).
-
-noEsCliche(Serie):-
-	plotTwist(Serie,_,_,Palabras),
+	
+esCliche(Serie, Palabras):-
 	plotTwist(UnaSerie,_,_,UnasPalabras),
 	contieneOtraLista(Palabras,UnasPalabras),
 	UnaSerie \= Serie.
@@ -187,6 +187,13 @@ contieneOtraLista([Cabeza|Cola1],[Cabeza|Cola2]) :-
 	contieneOtraLista(Cola1,Cola2).
 contieneOtraLista(Cola1, [_|Cola2]) :-
 	contieneOtraLista(Cola1,Cola2).
+	
+	
+contieneSucesoFuerte(Serie,Suceso):-
+	paso(Serie,_,_,Suceso),
+	sucesoFuerte(Suceso).
+contieneSucesoFuerte(Serie,Suceso):-
+	plotTwistFuerteParaSerie(Serie,Suceso).
 
 
 %pruebas
