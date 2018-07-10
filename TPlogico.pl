@@ -145,6 +145,7 @@ fullSpoil(Persona,OtraPersona):-
   persona(OtraPersona),
   Persona \= OtraPersona,
   amigo(OtraPersona,UnTercero),
+  UnTercero \= Persona,
   fullSpoil(Persona,UnTercero).
 
 fullSpoil(Persona,OtraPersona):-
@@ -284,6 +285,15 @@ test(starWars_es_popular, nondet):-
 
 :- begin_tests(fullSpoil).
 test(fullSpoil_nico, nondet):-
-  fullSpoil(nico, aye).
+  fullSpoil(nico, aye),
+  fullSpoil(nico, juan),
+  fullSpoil(nico, gaston),
+  fullSpoil(nico, maiu).
+test(fullSpoil_gaston, nondet):-
+  fullSpoil(gaston, aye),
+  fullSpoil(gaston, juan),
+  fullSpoil(gaston, maiu).
+test(fullSpoil_maiu, nondet):-
+  not(fullSpoil(maiu, _)).
 :- end_tests(fullSpoil).
 
