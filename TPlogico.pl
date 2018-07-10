@@ -127,14 +127,11 @@ miraOQuiereVer(Persona,Serie):-
 miraOQuiereVer(Persona,Serie):-
   mira(Persona,Serie).
 
-alguienLeSpoileo(Persona,Serie):-
-  leDijo(_, Persona, Serie,_).
-
 vieneZafando(Persona,Serie):-
   persona(Persona),
   esPopularOFuerte(Serie),
   miraOQuiereVer(Persona,Serie),
-  not(alguienLeSpoileo(Persona,Serie)).
+  not(leSpoileo(_,Persona,Serie)).
 
 habloCon(Persona, OtraPersona):-
   Persona \= OtraPersona,
@@ -196,7 +193,12 @@ contieneSucesoFuerte(Serie,Suceso):-
 
 
 %pruebas
-:- begin_tests(temporadas_series).
+:- begin_tests(series).
+test(madMen_no_es_una_serie_que_exista_en_este_universo, nondet):-
+  not(serie(madMen)).
+:- end_tests(series).
+
+:- begin_tests(temporadasSeries).
 test(got_temporada_3_tiene_12_capitulos, nondet):-
   capitulosDeTemporada(Serie, Capitulos, Temporada),
   Serie == got, Capitulos == 12, Temporada == 3.
@@ -209,7 +211,7 @@ test(himym_temporada_1_tiene_23_capitulos, nondet):-
 test(drHouse_temporada_8_tiene_16_capitulos, nondet):-
   capitulosDeTemporada(Serie, Capitulos, Temporada),
   Serie == drHouse, Capitulos == 16, Temporada == 8.
-:- end_tests(temporadas_series).
+:- end_tests(temporadasSeries).
 
 :- begin_tests(esSpoiler).
 test(muerte_emperor_es_spoiler, nondet):-
@@ -222,9 +224,32 @@ test(parentesco_anakin_y_lavezzi_no_es_spoiler, nondet):-
   noEsSpoiler(starWars, relacion(parentesco, anakin, lavezzi)).
 :- end_tests(esSpoiler).
 
-:- begin_tests(nose).
-test(muerte_emperor_es_spoiler, nondet):-
-  esSpoiler(starWars,muerte(emperor)).
-test(muerte_de_pedro_no_es_spoiler, nondet):-
-  noEsSpoiler(starWars,muerte(pedro)).
-:- end_tests(nose).
+:- begin_tests(leSpoileo).
+test(gaston_le_dijo_a_maiu_de_got, nondet):-
+  leSpoileo(gaston, maiu, got).
+test(nico_le_dijo_a_maiu_de_starWars, nondet):-
+  leSpoileo(nico, maiu, starWars).
+:- end_tests(leSpoileo).
+
+:- begin_tests(televidenteResponsable).
+test(son_televidenteResponsable_juan_maiu_aye, nondet):-
+  televidenteResponsable(juan),
+  televidenteResponsable(maiu),
+  televidenteResponsable(aye).
+test(no_son_televidenteResponsable_nico_gaston, nondet):-
+  not(televidenteResponsable(nico)),
+  not(televidenteResponsable(gaston)).
+:- end_tests(televidenteResponsable).
+
+:- begin_tests(vieneZafando).
+test(maiu_no_viene_zafando, nondet):-
+  not(vieneZafando(maiu, _)).
+test(juan_viene_zafando_hoc_himym_got, nondet):-
+  vieneZafando(juan, hoc),
+  vieneZafando(juan, himym),
+  vieneZafando(juan, got).
+test(juan_no_viene_zafando_futurama, nondet):-
+  not(vieneZafando(juan, futurama)).
+test(nico_viene_zafando_starWars, nondet):-
+  vieneZafando(nico, starWars).
+:- end_tests(vieneZafando).
