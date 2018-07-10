@@ -172,6 +172,18 @@ plotTwist(superCampeones, 9, 9,[suenio, coma, sinPiernas]).
 plotTwist(drHouse, 8, 7,[coma, pastillas]).
 
 
+noEsCliche(Serie):-
+	plotTwist(Serie,_,_,Palabras),
+	plotTwist(UnaSerie,_,_,UnasPalabras),
+	contieneOtraLista(Palabras,UnasPalabras),
+	UnaSerie \= Serie.
+	
+contieneOtraLista([],[]).
+contieneOtraLista([Cabeza|Cola1],[Cabeza|Cola2]) :-
+	contieneOtraLista(Cola1,Cola2).
+contieneOtraLista(Cola1, [_|Cola2]) :-
+	contieneOtraLista(Cola1,Cola2).
+
 
 %pruebas
 :- begin_tests(temporadas_series).
