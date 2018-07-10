@@ -133,18 +133,12 @@ vieneZafando(Persona,Serie):-
   miraOQuiereVer(Persona,Serie),
   not(leSpoileo(_,Persona,Serie)).
 
-habloCon(Persona, OtraPersona):-
-  Persona \= OtraPersona,
-  leDijo(Persona, OtraPersona, _ ,_).
+malaGente(Persona):-
+  forall(leDijo(Persona, OtraPersona, _, _), leSpoileo(Persona, OtraPersona, _)).
 
 malaGente(Persona):-
-  persona(Persona),
-  forall(persona(OtraPersona),(habloCon(Persona,OtraPersona),leSpoileo(Persona,OtraPersona,_))).
-
-malaGente(Persona):-
-  not(mira(Persona,Serie)),
-  Persona \= OtraPersona,
-  leSpoileo(Persona,OtraPersona,Serie).
+  leSpoileo(Persona, _, Serie),
+  not(mira(Persona, Serie)).
 
 fullSpoil(Persona,OtraPersona):-
   persona(Persona),
@@ -253,3 +247,9 @@ test(juan_no_viene_zafando_futurama, nondet):-
 test(nico_viene_zafando_starWars, nondet):-
   vieneZafando(nico, starWars).
 :- end_tests(vieneZafando).
+
+:- begin_tests(malaGente).
+test(gaston_es_mala_gente, nondet):-
+  malaGente(gaston).
+:- end_tests(malaGente).
+
