@@ -67,7 +67,7 @@ leDijo(aye, maiu, got, relacion(amistad, tyrion, john)).
 leDijo(aye, gaston, got, relacion(amistad, tyrion, dragon)).
 leDijo(nico, juan, futurama, muerte(seymourDiera)).
 leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
-leDijo(aye, nico, got, relacion(parentesco, tyrion, dragon)).
+leDijo(pedro, nico, got, relacion(parentesco, tyrion, dragon)).
 
 serie(Serie):-
   mira(_, Serie).
@@ -94,14 +94,14 @@ leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona, OtraPersona, Serie):-
   leDijo(Persona, OtraPersona, Serie, Spoiler),
   esSpoiler(Serie, Spoiler).
 
-relacion(Persona,OtraPersona,Serie):-
+seRelacionan(Persona,OtraPersona,Serie):-
   persona(Persona),
   persona(OtraPersona),
   Persona \= OtraPersona,
   serie(Serie).
 
 leSpoileo(Persona,OtraPersona,Serie):-
-  relacion(Persona,OtraPersona,Serie),
+  seRelacionan(Persona,OtraPersona,Serie),
   leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie).
 
 televidenteResponsable(Persona):-
@@ -160,9 +160,9 @@ plotTwist(superCampeones, 9, 9,[suenio, coma, sinPiernas]).
 plotTwist(drHouse, 8, 7,[coma, pastillas]).
 
 plotTwistFuerteParaSerie(Serie,plotTwist(Serie,Temporada,Episodio,Palabras)):-
-	plotTwist(Serie,Temporada,Episodio,Palabras),
-	not(esCliche(Serie,Palabras)),
-	pasoEnFinalDeTemporada(Serie,Temporada,Episodio).
+  plotTwist(Serie,Temporada,Episodio,Palabras),
+  not(esCliche(Serie,Palabras)),
+  pasoEnFinalDeTemporada(Serie,Temporada,Episodio).
 
 pasoEnFinalDeTemporada(Serie,Temporada,Episodio):-
 	capitulosDeTemporada(Serie, Episodio, Temporada).
@@ -177,14 +177,13 @@ contieneOtraLista([Cabeza|Cola1],[Cabeza|Cola2]) :-
 	contieneOtraLista(Cola1,Cola2).
 contieneOtraLista(Cola1, [_|Cola2]) :-
 	contieneOtraLista(Cola1,Cola2).
-	
-	
-contieneSucesoFuerte(Serie,Suceso):-
-	paso(Serie,_,_,Suceso),
-	sucesoFuerte(Suceso).
-contieneSucesoFuerte(Serie,Suceso):-
-	plotTwistFuerteParaSerie(Serie,Suceso).
 
+esFuerte(Serie,Suceso):-
+  paso(Serie,_,_,Suceso),
+  sucesoFuerte(Suceso).
+esFuerte(Serie,Suceso):-
+  plotTwistFuerteParaSerie(Serie,Suceso).
+  
 
 %pruebas
 :- begin_tests(series).
@@ -251,5 +250,40 @@ test(nico_viene_zafando_starWars, nondet):-
 :- begin_tests(malaGente).
 test(gaston_es_mala_gente, nondet):-
   malaGente(gaston).
+test(nico_es_mala_gente, nondet):-
+  malaGente(nico).
+test(pedro_no_es_mala_gente, nondet):-
+  not(malaGente(pedro)).
 :- end_tests(malaGente).
+
+:- begin_tests(esFuerte).
+test(futurama_y_starWars_son_fuertes_muertes_seymourDiera_emperor, nondet):-
+  esFuerte(futurama,muerte(seymourDiera)),
+  esFuerte(starWars,muerte(emperor)).
+test(starWars_es_fuerte_relaciones_parentescos, nondet):-
+  esFuerte(starWars,relacion(parentesco,anakin,rey)),
+  esFuerte(starWars,relacion(parentesco,vader,luke)).
+test(himym_es_fuerte_relaciones_amorosas, nondet):-
+  esFuerte(himym,relacion(amorosa,ted,robin)),
+  esFuerte(himym,relacion(amorosa,swarley,robin)).
+test(got_es_fuerte_plot_twist_con_fuego_y_boda, nondet):-
+  esFuerte(got,plotTwist(got, 3, 12, [fuego, boda])).
+test(got_no_es_fuerte_plot_twist_con_suenios_y_sin_piernas, nondet):-
+  not(esFuerte(got,plotTwist(got, 3, 2, [suenio, sinPiernas]))).
+test(drHouse_no_es_fuerte_plot_twist_con_coma_y_pastillas, nondet):-
+  not(esFuerte(drHouse,plotTwist(drHouse, 8, 7,[coma, pastillas]))).
+:- end_tests(esFuerte).
+
+:- begin_tests(popularidad).
+test(got_es_popular, nondet):-
+  esPopular(got).
+test(starWars_es_popular, nondet):-
+  esPopular(starWars).
+%no hace falta testear hoc por que es popular segun la base de conocimiento.
+:- end_tests(popularidad).
+
+:- begin_tests(fullSpoil).
+test(fullSpoil_nico, nondet):-
+  fullSpoil(nico, aye).
+:- end_tests(fullSpoil).
 
