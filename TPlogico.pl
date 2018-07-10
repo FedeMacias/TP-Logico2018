@@ -19,7 +19,6 @@ esPopular(Serie):-
 
 /*Se aceptan cambios de nombre de variables*/
 popularidad(Serie, Coeficiente):-
-  serie(Serie),
   cantidadPersonasQueMiran(Serie, PersonasQueMiran),
   cantidadDeConversacionesSobre(Serie, ConversacionesTotales),
   Coeficiente is PersonasQueMiran * ConversacionesTotales.
