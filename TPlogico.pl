@@ -1,49 +1,47 @@
-mira(juan,himym).
-mira(juan,futurama).
-mira(juan,got).
-mira(nico,starWars).
-mira(maiu,starWars).
-mira(maiu,onePiece).
-mira(maiu,got).
-mira(nico,got).
-mira(gaston,hoc).
-mira(pedro,got).
+mira(juan, himym).
+mira(juan, futurama).
+mira(juan, got).
+mira(nico, starWars).
+mira(maiu, starWars).
+mira(maiu, onePiece).
+mira(maiu, got).
+mira(nico, got).
+mira(gaston, hoc).
+mira(pedro, got).
 /*no se agrega mad men ni a alf ya que por el principio de universo cerrado al no estar en la base de conocimientos se asumen falsas*/
 
 esPopular(hoc).
 esPopular(Serie):-
   serie(Serie),
-  popularidad(Serie,Coeficiente),
-  popularidad(starWars,CoeficienteDeStarWars),
+  popularidad(Serie, Coeficiente),
+  popularidad(starWars, CoeficienteDeStarWars),
   Coeficiente >= CoeficienteDeStarWars.
 
 /*Se aceptan cambios de nombre de variables*/
-popularidad(Serie,Coeficiente):-
+popularidad(Serie, Coeficiente):-
   serie(Serie),
-  cantidadPersonasQueMiran(Serie,PersonasQueMiran),
-  cantidadDeConversacionesSobre(Serie,ConversacionesTotales),
+  cantidadPersonasQueMiran(Serie, PersonasQueMiran),
+  cantidadDeConversacionesSobre(Serie, ConversacionesTotales),
   Coeficiente is PersonasQueMiran * ConversacionesTotales.
 
-cantidadPersonasQueMiran(Serie,PersonasQueMiran):-
-  serie(Serie),
-  findall(Persona,mira(Persona,Serie),TodasLasQueMiran),
-  length(TodasLasQueMiran,CantidadDePersonasQueMiran),
+cantidadPersonasQueMiran(Serie ,PersonasQueMiran):-
+  findall(Persona, mira(Persona, Serie), TodasLasQueMiran),
+  length(TodasLasQueMiran, CantidadDePersonasQueMiran),
   PersonasQueMiran is CantidadDePersonasQueMiran.
 
-cantidadDeConversacionesSobre(Serie,ConversacionesTotales):-
-  serie(Serie),
-  findall(Conversacion,leDijo(_,_,Serie,Conversacion),ConversacionesSobreSerie),
-  length(ConversacionesSobreSerie,CantidadDeConversacionesSobreSerie),
+cantidadDeConversacionesSobre(Serie, ConversacionesTotales):-
+  findall(Conversacion, leDijo(_, _, Serie, Conversacion), ConversacionesSobreSerie),
+  length(ConversacionesSobreSerie, CantidadDeConversacionesSobreSerie),
   ConversacionesTotales is CantidadDeConversacionesSobreSerie.
 
-quiereVer(juan,hoc).
-quiereVer(aye,got).
-quiereVer(gaston,himym).
+quiereVer(juan, hoc).
+quiereVer(aye, got).
+quiereVer(gaston, himym).
 
-capitulosDeTemporada(got,12,3).
-capitulosDeTemporada(got,10,2).
-capitulosDeTemporada(himym,23,1).
-capitulosDeTemporada(drHouse,16,8).
+capitulosDeTemporada(got, 12, 3).
+capitulosDeTemporada(got, 10, 2).
+capitulosDeTemporada(himym, 23, 1).
+capitulosDeTemporada(drHouse, 16, 8).
 
 amigo(nico, maiu).
 amigo(maiu, gaston).
@@ -73,29 +71,29 @@ leDijo(pedro, aye, got, relacion(amistad, tyrion, dragon)).
 leDijo(aye, nico, got, relacion(parentesco, tyrion, dragon)).
 
 serie(Serie):-
-  mira(_,Serie).
+  mira(_, Serie).
 
 persona(Persona):-
-  mira(Persona,_).
+  mira(Persona, _).
 
 persona(Persona):-
-  quiereVer(Persona,_).
+  quiereVer(Persona, _).
 
-esSpoiler(Serie,Spoiler):-
+esSpoiler(Serie, Spoiler):-
   serie(Serie),
-  paso(Serie,_,_,Spoiler).
+  paso(Serie, _, _, Spoiler).
 
-noEsSpoiler(Serie,Spoiler):- not(esSpoiler(Serie,Spoiler)).
+noEsSpoiler(Serie, Spoiler):- not(esSpoiler(Serie, Spoiler)).
 
-leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona, OtraPersona, Serie):-
   mira(OtraPersona, Serie),
-  leDijo(Persona,OtraPersona,Serie,Spoiler),
-  esSpoiler(Serie,Spoiler).
+  leDijo(Persona, OtraPersona, Serie, Spoiler),
+  esSpoiler(Serie, Spoiler).
 
-leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona,OtraPersona,Serie):-
-  quiereVer(OtraPersona,Serie),
-  leDijo(Persona,OtraPersona,Serie,Spoiler),
-  esSpoiler(Serie,Spoiler).
+leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona, OtraPersona, Serie):-
+  quiereVer(OtraPersona, Serie),
+  leDijo(Persona, OtraPersona, Serie, Spoiler),
+  esSpoiler(Serie, Spoiler).
 
 relacion(Persona,OtraPersona,Serie):-
   persona(Persona),
