@@ -24,14 +24,16 @@ popularidad(Serie, Coeficiente):-
   Coeficiente is PersonasQueMiran * ConversacionesTotales.
 
 cantidadPersonasQueMiran(Serie ,PersonasQueMiran):-
+  serie(Serie),
   findall(Persona, mira(Persona, Serie), TodasLasQueMiran),
-  length(TodasLasQueMiran, CantidadDePersonasQueMiran),
-  PersonasQueMiran is CantidadDePersonasQueMiran.
+  length(TodasLasQueMiran, PersonasQueMiran).
+
 
 cantidadDeConversacionesSobre(Serie, ConversacionesTotales):-
+  serie(Serie),
   findall(Conversacion, leDijo(_, _, Serie, Conversacion), ConversacionesSobreSerie),
-  length(ConversacionesSobreSerie, CantidadDeConversacionesSobreSerie),
-  ConversacionesTotales is CantidadDeConversacionesSobreSerie.
+  length(ConversacionesSobreSerie, ConversacionesTotales).
+
 
 quiereVer(juan, hoc).
 quiereVer(aye, got).
@@ -84,13 +86,14 @@ esSpoiler(Serie, Spoiler):-
 
 noEsSpoiler(Serie, Spoiler):- not(esSpoiler(Serie, Spoiler)).
 
-leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona, OtraPersona, Serie):-
-  mira(OtraPersona, Serie),
-  leDijo(Persona, OtraPersona, Serie, Spoiler),
-  esSpoiler(Serie, Spoiler).
+miraOQuiereVer(Persona,Serie):-
+  quiereVer(Persona,Serie).
+
+miraOQuiereVer(Persona,Serie):-
+  mira(Persona,Serie).
 
 leDijoUnSpoilerDeUnaQueVioOQuiereVer(Persona, OtraPersona, Serie):-
-  quiereVer(OtraPersona, Serie),
+  miraOQuiereVer(OtraPersona, Serie),
   leDijo(Persona, OtraPersona, Serie, Spoiler),
   esSpoiler(Serie, Spoiler).
 
@@ -121,12 +124,6 @@ esPopularOFuerte(Serie):-
   paso(Serie,_,_,Suceso),
   forall(paso(Serie,_,_,Suceso),sucesoFuerte(Suceso)).
 
-miraOQuiereVer(Persona,Serie):-
-  quiereVer(Persona,Serie).
-
-miraOQuiereVer(Persona,Serie):-
-  mira(Persona,Serie).
-
 vieneZafando(Persona,Serie):-
   persona(Persona),
   esPopularOFuerte(Serie),
@@ -134,6 +131,7 @@ vieneZafando(Persona,Serie):-
   not(leSpoileo(_,Persona,Serie)).
 
 malaGente(Persona):-
+  persona(Persona),
   forall(leDijo(Persona, OtraPersona, _, _), leSpoileo(Persona, OtraPersona, _)).
 
 malaGente(Persona):-
@@ -144,7 +142,7 @@ fullSpoil(Persona,OtraPersona):-
   persona(Persona),
   persona(OtraPersona),
   Persona \= OtraPersona,
-  amigo(OtraPersona,UnTercero),
+  amigo(UnTercero,OtraPersona),
   UnTercero \= Persona,
   fullSpoil(Persona,UnTercero).
 
@@ -153,7 +151,7 @@ fullSpoil(Persona,OtraPersona):-
   persona(OtraPersona),
   Persona \= OtraPersona,
   leSpoileo(Persona,OtraPersona,_).
-  
+
 %plotTwist(Serie, Temporada, Episodio, listaPalabrasClave)
 plotTwist(got, 3, 2, [suenio, sinPiernas]).
 plotTwist(got, 3, 12, [fuego, boda]).
@@ -167,12 +165,12 @@ plotTwistFuerteParaSerie(Serie,plotTwist(Serie,Temporada,Episodio,Palabras)):-
 
 pasoEnFinalDeTemporada(Serie,Temporada,Episodio):-
 	capitulosDeTemporada(Serie, Episodio, Temporada).
-	
+
 esCliche(Serie, Palabras):-
 	plotTwist(UnaSerie,_,_,UnasPalabras),
 	contieneOtraLista(Palabras,UnasPalabras),
 	UnaSerie \= Serie.
-	
+
 contieneOtraLista([],[]).
 contieneOtraLista([Cabeza|Cola1],[Cabeza|Cola2]) :-
 	contieneOtraLista(Cola1,Cola2).
@@ -184,7 +182,7 @@ esFuerte(Serie,Suceso):-
   sucesoFuerte(Suceso).
 esFuerte(Serie,Suceso):-
   plotTwistFuerteParaSerie(Serie,Suceso).
-  
+
 
 %pruebas
 :- begin_tests(series).
@@ -296,4 +294,3 @@ test(fullSpoil_gaston, nondet):-
 test(fullSpoil_maiu, nondet):-
   not(fullSpoil(maiu, _)).
 :- end_tests(fullSpoil).
-
